@@ -1,0 +1,35 @@
+
+name: CloudFlow CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate website
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check website file exists
+        run: test -f index.html
+
+      - name: Check required HTML elements
+        run: |
+          grep -qi '<!DOCTYPE html>' index.html
+          grep -qi '<html' index.html
+          grep -qi '<head>' index.html
+          grep -qi '<body>' index.html
+          grep -qi '</html>' index.html
+
+      - name: Check page title
+        run: grep -qi '<title>CloudFlow' index.html
